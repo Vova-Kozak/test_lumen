@@ -20,7 +20,7 @@ class CreateAddressTable extends Migration
             $table->string('place_id')->unique();
             $table->string('name');
             $table->integer('city_id')->nullable(true);
-            $table->string('region_id');
+            $table->string('region_id')->nullable(true);
             $table->timestamps();
         });
     }

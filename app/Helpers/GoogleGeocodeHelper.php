@@ -29,7 +29,6 @@ class GoogleGeocodeHelper
 
         $ch = curl_init('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $latlng . '&language=uk&key=' . $this->googleApiKey);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
         $result = json_decode(curl_exec($ch), true);
         curl_close($ch);
