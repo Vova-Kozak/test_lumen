@@ -13,7 +13,7 @@ class GoogleGeocodeHelper
         $this->googleApiKey = env('GOOGLE_MAP_API_KEY');
     }
 
-    public function getAddressByLatLng($longitude = 0, $latitude = 0)
+    public function getAddressByLatLng($latitude = 0, $longitude = 0)
     {
         $resultData = [
             'place_id' => '',
@@ -25,7 +25,7 @@ class GoogleGeocodeHelper
             'initialize' => false
         ];
 
-        $latlng = implode(',', [$longitude, $latitude]);
+        $latlng = implode(',', [$latitude, $longitude]);
 
         $ch = curl_init('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $latlng . '&language=uk&key=' . $this->googleApiKey);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
