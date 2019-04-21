@@ -40,18 +40,14 @@ class AddressController extends Controller
             $address = Address::where('place_id', $addressParse['place_id'])->first();
             if (!$address) {
 
-                if ($addressParse['region'] != '') {
-                    $regionDb = Region::where('name', $addressParse['region'])->first();
-                    if (!$regionDb) {
-                        $regionDb = Region::create(['name' => $addressParse['region']]);
-                    }
+                $regionDb = Region::where('name', $addressParse['region'])->first();
+                if (!$regionDb) {
+                    $regionDb = Region::create(['name' => $addressParse['region']]);
                 }
 
-                if ($addressParse['city'] != '') {
-                    $cityDb = City::where('name', $addressParse['city'])->first();
-                    if (!$cityDb) {
-                        $cityDb = City::create(['name' => $addressParse['city'], 'region_id' => $addressParse['region'] ? $regionDb->id : null]);
-                    }
+                $cityDb = City::where(['name' => $addressParse['city'], 'region_id' => $regionDb ? $regionDb->id : null])->first();
+                if (!$cityDb) {
+                    $cityDb = City::create(['name' => $addressParse['city'], 'region_id' => $regionDb ? $regionDb->id : null]);
                 }
 
                 Address::create([
@@ -59,8 +55,8 @@ class AddressController extends Controller
                     'latitude'  => $addressParse['lat'],
                     'place_id'  => $addressParse['place_id'],
                     'name'      => $addressParse['formatted_address'],
-                    'city_id'   => $addressParse['city'] ? $cityDb->id : null,
-                    'region_id' => $addressParse['region'] ? $regionDb->id : null
+                    'city_id'   => $cityDb ? $cityDb->id : null,
+                    'region_id' => $regionDb ? $regionDb->id : null
                 ]);
             }
 

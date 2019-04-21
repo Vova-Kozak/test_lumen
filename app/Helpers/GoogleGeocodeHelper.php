@@ -51,9 +51,59 @@ class GoogleGeocodeHelper
                         $resultData['city'] = $address_component['long_name'];
                     }
                 }
+
+                if ($resultData['region'] == '') {
+                    $resultData['region'] = $this->getRegionByLatLng($latlng);
+                }
+
+                if ($resultData['city'] == '') {
+                    $resultData['city'] = $this->getCityByLatLng($latlng);
+                }
             }
         }
 
         return $resultData;
+    }
+
+    private function getRegionByLatLng($latLng)
+    {
+        $ch = curl_init('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $latLng . '&language=uk&result_type=administrative_area_level_1&key=' . $this->googleApiKey);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = json_decode(curl_exec($ch), true);
+        curl_close($ch);
+        $region = 'without-region';
+
+        if ($result['status'] == 'OK') {
+            if (!empty($result['results'])) {
+                foreach ($result['results'][0]['address_components'] as $address_component) {
+                    if (in_array('administrative_area_level_1', $address_component['types'])) {
+                        $region = $address_component['long_name'];
+                    }
+                }
+            }
+        }
+
+        return $region;
+    }
+
+    private function getCityByLatLng($latLng)
+    {
+        $ch = curl_init('https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $latLng . '&language=uk&result_type=locality&key=' . $this->googleApiKey);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = json_decode(curl_exec($ch), true);
+        curl_close($ch);
+        $city = 'without-city';
+
+        if ($result['status'] == 'OK') {
+            if (!empty($result['results'])) {
+                foreach ($result['results'][0]['address_components'] as $address_component) {
+                    if (in_array('locality', $address_component['types'])) {
+                        $city = $address_component['long_name'];
+                    }
+                }
+            }
+        }
+
+        return $city;
     }
 }

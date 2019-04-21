@@ -14,21 +14,14 @@ class RegionController extends Controller
         ]);
 
         $page = $request->get('page', 1);
-        $regionList = Region::all()->forPage($page, 10);
+        $regionList = Region::all()->forPage($page, 20);
         return response($regionList, 200);
     }
 
-    public function addressByRegion(Request $request, $id = 0)
+    public function addressByRegion($id = 0)
     {
-        $this->validate($request, [
-            'page' => 'int'
-        ]);
+        $addressList = Region::with('cities')->find($id);
 
-        $page = $request->get('page', 1);
-        $addressList = Region::find($id);
-        $addressList = $addressList ? $addressList->addresses->forPage($page, 10) : [];
-
-        return response($addressList, 200);
-
+        return response($addressList ?? [], 200);
     }
 }

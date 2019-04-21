@@ -10,6 +10,9 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 
 class City extends Model
 {
+    protected $with = [
+        'addresses'
+    ];
 
     protected $table = 'city';
 
@@ -24,6 +27,7 @@ class City extends Model
     ];
 
     protected $hidden = [
+        'region_id',
         'created_at',
         'updated_at'
     ];
@@ -34,5 +38,13 @@ class City extends Model
     public function region()
     {
         return $this->belongsTo('App\Region');
+    }
+
+    /**
+     * Get the addresses for the city.
+     */
+    public function addresses()
+    {
+        return $this->hasMany('App\Address');
     }
 }

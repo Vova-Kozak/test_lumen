@@ -30,7 +30,8 @@ class Address extends Model
         'place_id',
         'city_id',
         'region_id',
-        'created_at',
+        'longitude',
+        'latitude',
         'updated_at'
     ];
 
